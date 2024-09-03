@@ -100,7 +100,7 @@ private
     config['mode'] = config['mode'].to_s
     config['port'] = config['port'].to_i
     config['root'] = root = Pathname.new(config['root'])
-    config['build_cache_dir'] = root.join(config['build_cache_dir'])
+    config['build_cache_dir'] = Pathname.new(Dir.pwd).join(config['build_cache_dir'])
     config['ssr_output_dir'] = root.join(config['ssr_output_dir'])
     coerce_booleans(config, 'auto_build', 'hide_build_console_output', 'https', 'skip_compatibility_check', 'skip_proxy')
     config['package_manager'] ||= detect_package_manager(root)
