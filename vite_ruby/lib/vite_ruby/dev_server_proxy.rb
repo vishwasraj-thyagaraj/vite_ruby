@@ -70,6 +70,10 @@ private
   #
   # If the path starts with that prefix, it will be redirected to Vite.
   def vite_url_prefix
-    @vite_url_prefix ||= config.public_output_dir.empty? ? VITE_DEPENDENCY_PREFIX : "/#{ config.public_output_dir }/"
+    # These are the following public_output_dir values that will be considered for each env combo
+    # When vite server alone is running the public_output_dir should be ""
+    # When rails server alone is running the public_output_dir should be "vite", which is hardcoded in the config
+    # When both vite and rails server are running the /#{ config.public_output_dir }/ should be "" as rails tries to serve the assets from the vite server
+    @vite_url_prefix ||= config.public_output_dir.empty? ? VITE_DEPENDENCY_PREFIX : ""
   end
 end

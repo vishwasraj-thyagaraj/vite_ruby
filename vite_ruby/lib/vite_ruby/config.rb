@@ -155,6 +155,7 @@ private
         'config_path' => option_from_env('config_path') || DEFAULT_CONFIG.fetch('config_path'),
         'mode' => option_from_env('mode') || mode,
         'root' => option_from_env('root') || Dir.pwd + '/frontend-react',
+        'public_output_dir' => 'vite',
       }.select { |_, value| value }
     end
 
