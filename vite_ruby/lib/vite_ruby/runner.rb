@@ -29,8 +29,13 @@ private
   def command_for(args)
     [config.to_env(env)].tap do |cmd|
       exec_args, vite_args = args.partition { |arg| arg.start_with?('--node-options') }
-      cmd.push(*vite_executable(*exec_args))
-      cmd.push(*vite_args)
+      if(File.file?('.nvmrc'))
+        cmd.push('sh', '-c')
+        cmd.push("source ~/.nvm/nvm.sh && nvm use && #{vite_executable(*exec_args).join(' ')} #{vite_args.join(' ')}")
+      else
+        cmd.push(*vite_executable(*exec_args))
+        cmd.push(*vite_args)
+      end
       cmd.push('--mode', config.mode) unless args.include?('--mode') || args.include?('-m')
     end
   end
