@@ -31,7 +31,7 @@ private
       exec_args, vite_args = args.partition { |arg| arg.start_with?('--node-options') }
       if(File.file?('.nvmrc'))
         cmd.push('sh', '-c')
-        cmd.push("source ~/.nvm/nvm.sh && nvm use && #{vite_executable(*exec_args).join(' ')} #{vite_args.join(' ')}")
+        cmd.push("PATH='/usr/local/node16/bin:$PATH' && #{vite_executable(*exec_args).join(' ')} #{vite_args.join(' ')}")
       else
         cmd.push(*vite_executable(*exec_args))
         cmd.push(*vite_args)
