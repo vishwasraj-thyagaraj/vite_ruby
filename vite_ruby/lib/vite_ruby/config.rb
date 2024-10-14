@@ -38,8 +38,11 @@ class ViteRuby::Config
   end
 
   # Public: The directory where Vite will store the built assets.
+  # this can also be avoided if we can configure rails to server frontend public path for local
   def build_output_dir
-    root.join(public_dir, public_output_dir)
+    # as the final build is present in public folder, rails need to lookup manifest file from here
+    # as root will not point upto to frontend, the path will be frontend/public which will result in 404
+    Pathname.new(Dir.pwd).join(public_dir, public_output_dir)
   end
 
   # Public: The directory where the entries are located.
@@ -97,7 +100,7 @@ private
     config['mode'] = config['mode'].to_s
     config['port'] = config['port'].to_i
     config['root'] = root = Pathname.new(config['root'])
-    config['build_cache_dir'] = root.join(config['build_cache_dir'])
+    config['build_cache_dir'] = Pathname.new(Dir.pwd).join(config['build_cache_dir'])
     config['ssr_output_dir'] = root.join(config['ssr_output_dir'])
     coerce_booleans(config, 'auto_build', 'hide_build_console_output', 'https', 'skip_compatibility_check', 'skip_proxy')
     config['package_manager'] ||= detect_package_manager(root)
@@ -145,12 +148,13 @@ private
     }
 
     # Internal: Default values for a Ruby application.
+    # Not able to load env via config/vite.rb or override via ViteRuby.configure, need to check to avoid this change
     def config_defaults(asset_host: nil, mode: ENV.fetch('RACK_ENV', 'development'), root: Dir.pwd)
       {
         'asset_host' => option_from_env('asset_host') || asset_host,
         'config_path' => option_from_env('config_path') || DEFAULT_CONFIG.fetch('config_path'),
         'mode' => option_from_env('mode') || mode,
-        'root' => option_from_env('root') || root,
+        'root' => option_from_env('root') || Dir.pwd + '/frontend-react',
       }.select { |_, value| value }
     end
 
